@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deep | Learning in Public</title>
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-soft: #0f172a;
+      --accent: #6366f1;
+      --accent-glow: #a5b4fc;
+      --green: #22c55e;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --border: #1e293b;
+      --radius: 16px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: radial-gradient(ellipse at top, #111827 0%, #020617 70%);
+      color: var(--text);
+      line-height: 1.7; 
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 20px 80px;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(20px);
+      background: rgba(2, 6, 23, 0.94);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 20px var(--green);
+      animation: pulse 4s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 12px var(--green); }
+      50%      { box-shadow: 0 0 30px var(--green); }
+    }
+
+    nav ul {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+      font-size: 0.95rem;
+    }
+
+    nav a {
+      padding: 8px 14px;
+      border-radius: 999px;
+      color: var(--muted);
+      transition: all 0.3s ease;
+    }
+
+    nav a:hover {
+      color: white;
+      background: rgba(30, 41, 59, 0.8);
+    }
+
+    .btn-primary {
+      padding: 10px 20px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), #4f46e5);
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.02em;
+    }
+
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -40%;
+      width: 40%;
+      height: 100%;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.25), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
+    }
+
+    .btn-primary:hover::after {
+      transform: translateX(260%);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 50px rgba(99, 102, 241, 0.5);
+    }
+
+    /* Scroll reveal */
+    section {
+      padding: 72px 0 88px;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    section.reveal-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    h1, h2 {
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    h2 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      margin-bottom: 16px;
+      background: linear-gradient(90deg, var(--text), var(--accent-glow));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .section-tag {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+   
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.9fr;
+      gap: 56px;
+      align-items: center;
+      padding-top: 32px;
+    }
+
+    .hero-title {
+      font-size: clamp(3rem, 7vw, 5rem);
+      line-height: 0.98;
+      margin-bottom: 22px;
+      animation: floatTitle 6s ease-in-out infinite;
+    }
+
+    @keyframes floatTitle {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-6px); }
+    }
+
+    .hero-highlight {
+      color: var(--accent-glow);
+      text-shadow: 0 0 40px rgba(165, 180, 252, 0.4);
+    }
+
+    .hero-text {
+      font-size: 1.06rem;
+      color: var(--muted);
+      max-width: 40rem;
+      margin-bottom: 10px;
+    }
+
+    .hero-quote {
+      font-size: 0.95rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 18px;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 18px 0 26px;
+    }
+
+    .pill {
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .pill-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 16px var(--green);
+    }
+
+    .hero-card {
+      background: linear-gradient(145deg, rgba(99,102,241,0.14), rgba(15,23,42,0.95));
+      border-radius: 24px;
+      padding: 24px;
+      border: 1px solid rgba(99,102,241,0.25);
+      box-shadow: 0 30px 70px rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+      font-size: 0.98rem;
+      transform-origin: center;
+      transition: transform 0.6s ease, box-shadow 0.6s ease;
+    }
+
+    .hero-card:hover {
+      transform: translateY(-6px) rotate3d(1,1,0,3deg);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.85);
+    }
+
+    
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 28px;
+    }
+
+    .about-card {
+      background: var(--bg-soft);
+      padding: 24px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .about-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 36px rgba(15,23,42,0.8);
+      border-color: rgba(99,102,241,0.5);
+    }
+
+   
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .skill-card {
+      background: var(--bg-soft);
+      border-radius: var(--radius);
+      padding: 20px;
+      border: 1px solid var(--border);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .skill-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 40px rgba(99,102,241,0.22);
+    }
+
+    .skill-meter {
+      height: 8px;
+      background: rgba(30,41,59,0.8);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 10px 0 6px;
+    }
+
+    .skill-meter-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--green));
+      border-radius: 999px;
+      width: 100%;
+    }
+
+    
+    .timeline {
+      display: grid;
+      gap: 22px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 20px;
+    }
+
+    .timeline-year {
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 1.05rem;
+    }
+
+    .timeline-card {
+      background: var(--bg-soft);
+      padding: 20px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      transform: translateX(-12px);
+      opacity: 0.9;
+      transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+    }
+
+    .timeline-item:hover .timeline-card {
+      transform: translateX(0);
+      box-shadow: 0 18px 40px rgba(15,23,42,0.9);
+      border-color: rgba(99,102,241,0.5);
+    }
+
+    .journey-quote {
+      font-size: 0.95rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-top: 10px;
+    }
+
+    
+    .projects-placeholder {
+      text-align: center;
+      padding: 36px;
+      background: rgba(30,41,59,0.4);
+      border-radius: var(--radius);
+      border: 2px dashed var(--accent);
+    }
+
+    
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 32px;
+    }
+
+    .icon-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .icon-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 22px rgba(15,23,42,0.8);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+    }
+
+    .icon-btn:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 16px 35px rgba(15,23,42,0.95);
+      border-color: rgba(99,102,241,0.7);
+      background: rgba(30,64,175,0.9);
+    }
+
+    input, textarea {
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 12px;
+      width: 100%;
+      outline: none;
+      font-size: 0.95rem;
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+    }
+
+    
+    footer {
+      padding: 28px 20px 26px;
+      text-align: center;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      background: rgba(2,6,23,0.98);
+      font-size: 0.88rem;
+    }
+
+    footer .links {
+      margin-top: 12px;
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    footer .links a {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid var(--border);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    footer .links a:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 30px rgba(15,23,42,0.9);
+      border-color: rgba(99,102,241,0.7);
+    }
+
+    
+    @media (max-width: 768px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+      nav ul { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav-inner">
+      <div class="logo">
+        <div class="logo-dot"></div>
+        deep
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#hero">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#journey">Journey</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="#contact" class="btn-primary">Let’s talk</a>
+    </div>
+  </header>
+
+  <div class="wrapper">
+    <main>
+     
+      <section id="hero">
+        <div class="hero">
+          <div>
+            <div class="section-tag">Home • Kathmandu • 2026</div>
+            <h1 class="hero-title">
+              Hi, I'm <span class="hero-highlight">deep</span>.<br>
+              Learning to code,<br>
+              breaking things (on purpose).
+            </h1>
+            <p class="hero-text">
+              I’m a student at Xavier International College in Kathmandu, slowly turning curiosity about websites
+              into real code. This is my home on the internet to track progress, mistakes, and small wins. 
+            </p>
+            <p class="hero-quote">
+              “If my code works on the first try, I automatically mistrust it.”
+            </p>
+            <div class="hero-meta">
+              <div class="pill"><div class="pill-dot"></div>Beginner • High motivation</div>
+              <div class="pill">Xavier International College • +2</div>
+              <div class="pill">Open to feedback and roast-level reviews</div>
+            </div>
+            <div style="display:flex; gap:16px; flex-wrap:wrap; margin-top:4px;">
+              <a href="#contact" class="btn-primary">Contact me</a>
+              <a href="#journey" class="btn-primary" style="background:linear-gradient(135deg,#22c55e,#16a34a);">
+                View my journey
+              </a>
+            </div>
+          </div>
+
+          <aside class="hero-card">
+            <p style="font-size:1.05rem; margin-bottom:14px; color:var(--accent-glow);">
+              Where I am right now
+            </p>
+            <p style="margin-bottom:16px; color:var(--muted);">
+              No professional experience yet — just a lot of curiosity, late‑night tutorials, and the occasional
+              “why is this div moving?” moment. This page will change as I grow.
+            </p>
+            <p style="font-size:0.9rem; color:var(--muted); margin-bottom:14px;">
+              Current status: writing more code than apologies, but still sending both.
+            </p>
+            <div style="display:flex; flex-wrap:wrap; gap:10px;">
+              <span style="padding:6px 14px; border-radius:999px; background:rgba(99,102,241,0.15); border:1px solid var(--accent);">
+                Beginner front‑end
+              </span>
+              <span style="padding:6px 14px; border-radius:999px; background:rgba(34,197,94,0.15); border:1px solid var(--green);">
+                Learning every week
+              </span>
+              <span style="padding:6px 14px; border-radius:999px; background:rgba(165,180,252,0.1); border:1px solid var(--accent-glow);">
+                Building in public
+              </span>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      
+      <section id="about">
+        <div class="section-tag">About me</div>
+        <h2>Just starting, but serious</h2>
+        <p style="font-size:1.05rem; color:var(--muted); max-width:65ch; margin-bottom:28px;">
+          I study at Xavier International College and I’ve recently decided to take coding seriously.
+          I don’t have clients or a big portfolio yet — just patience, curiosity, and a plan to improve step by step.
+        </p>
+
+        <div class="about-grid">
+          <div class="about-card">
+            <p style="margin-bottom:12px;">
+              Right now I’m focused on solid basics: clean HTML, modern CSS, and responsive layouts that work on phones and laptops.
+              I’d rather understand the fundamentals than copy‑paste fancy frameworks I can’t explain.
+            </p>
+            <p style="color:var(--muted);">
+              This portfolio is my public notebook. Whenever I ship something (even tiny), it lands here —
+              wins, fails, and “what was I thinking?” moments all documented.
+            </p>
+          </div>
+
+          <div class="about-card">
+            <p style="color:var(--muted); margin-bottom:14px;">A few things that describe me:</p>
+            <ul style="list-style:none; display:grid; gap:8px; font-size:0.98rem;">
+              <li>→ Student at Xavier International College, Kathmandu</li>
+              <li>→ Learns mostly from YouTube, docs, and experiments</li>
+              <li>→ Believes small consistent steps beat random big moves</li>
+              <li>→ Thinks “broken” is just another word for “almost working”</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      
+      <section id="skills">
+        <div class="section-tag">Skills</div>
+        <h2>What I’m learning now</h2>
+        <p style="font-size:1rem; color:var(--muted); max-width:60ch; margin-bottom:24px;">
+          These aren’t “expert” levels — they’re honest progress bars for areas I’m practicing.
+          The goal is to keep moving the bars slowly to the right, not to max them out overnight.
+        </p>
+
+        <div class="skills-grid">
+          <div class="skill-card">
+            <p style="font-weight:700; margin-bottom:6px;">HTML & structure</p>
+            <div class="skill-meter"><div class="skill-meter-fill" style="width:65%;"></div></div>
+            <p style="font-size:0.9rem; color:var(--muted);">Semantic tags, basic layouts, clean markup.</p>
+          </div>
+
+          <div class="skill-card">
+            <p style="font-weight:700; margin-bottom:6px;">CSS & styling</p>
+            <div class="skill-meter"><div class="skill-meter-fill" style="width:58%;"></div></div>
+            <p style="font-size:0.9rem; color:var(--muted);">Flexbox, simple grids, responsive designs.</p>
+          </div>
+
+          <div class="skill-card">
+            <p style="font-weight:700; margin-bottom:6px;">Responsive thinking</p>
+            <div class="skill-meter"><div class="skill-meter-fill" style="width:50%;"></div></div>
+            <p style="font-size:0.9rem; color:var(--muted);">
+              Making pages look okay on phones and laptops (and not explode on tablets).
+            </p>
+          </div>
+
+          <div class="skill-card">
+            <p style="font-weight:700; margin-bottom:6px;">Self-learning</p>
+            <div class="skill-meter"><div class="skill-meter-fill" style="width:75%;"></div></div>
+            <p style="font-size:0.9rem; color:var(--muted);">
+              Turning tutorials into experiments instead of only watching them at 2x speed.
+            </p>
+          </div>
+
+          <div class="skill-card">
+            <p style="font-weight:700; margin-bottom:6px;">Problem solving</p>
+            <div class="skill-meter"><div class="skill-meter-fill" style="width:45%;"></div></div>
+            <p style="font-size:0.9rem; color:var(--muted);">
+              Debugging, reading errors, and trying not to shout at the screen.
+            </p>
+          </div>
+
+          <div class="skill-card">
+            <p style="font-weight:700; margin-bottom:6px;">Blender (3D basics)</p>
+            <div class="skill-meter"><div class="skill-meter-fill" style="width:25%;"></div></div>
+            <p style="font-size:0.9rem; color:var(--muted);">
+              Simple models, basic scenes, and the classic “why is my render black?” problem.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      
+      <section id="journey">
+        <div class="section-tag">My journey</div>
+        <h2>From curiosity to code</h2>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-year">2025</div>
+            <div class="timeline-card">
+              <p style="font-weight:700; margin-bottom:6px;">Discovered how websites really work</p>
+              <p style="color:var(--muted);">
+                Opened “Inspect Element”, poked around for a bit, and realised the internet isn’t magic —
+                it’s just HTML, CSS, and JavaScript written by humans (who also get confused).
+              </p>
+              <p class="journey-quote">
+                “Step one: break the layout. Step two: learn how to fix it.”
+              </p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-year">2026</div>
+            <div class="timeline-card">
+              <p style="font-weight:700; margin-bottom:6px;">Built and launched this home page</p>
+              <p style="color:var(--muted);">
+                Wrote my own HTML and CSS for this portfolio. It’s simple, but it’s mine and it’s online —
+                which is already better than leaving ideas stuck in a notebook.
+              </p>
+              <p class="journey-quote">
+                “Not perfect, but published > perfect, but stuck in my head.”
+              </p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-year">Next</div>
+            <div class="timeline-card">
+              <p style="font-weight:700; margin-bottom:6px;">Start shipping real projects</p>
+              <p style="color:var(--muted);">
+                Small websites, tools, or experiments — each one better than the last, all documented here.
+                Future me will look back at this page and laugh (in a good way).
+              </p>
+              <p class="journey-quote">
+                “Version 1 is supposed to be a bit embarrassing.”
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      
+      <section id="projects">
+        <div class="section-tag">Projects</div>
+        <h2>Projects coming soon</h2>
+        <p style="color:var(--muted); max-width:60ch; margin:0 auto 28px; text-align:center; font-size:1.02rem;">
+          I don’t have finished projects to show yet. This section will fill up as I build and publish my first real work.
+        </p>
+        <div class="projects-placeholder">
+          <p style="font-size:1.25rem; margin-bottom:10px;">Nothing here… yet 🚧</p>
+          <p style="color:var(--muted);">
+            Think of this as the loading screen of my portfolio. Please wait, assets downloading…
+          </p>
+        </div>
+      </section>
+
+      
+      <section id="contact">
+        <div class="section-tag">Contact</div>
+        <h2>Want to say hi or share advice?</h2>
+        <p style="color:var(--muted); margin-bottom:26px; font-size:1.02rem; max-width:60ch;">
+          If you’re a developer, designer, senior at Xavier International, or anyone further along the journey,
+          your tips and feedback would help a lot. Friendly roast of my code is also welcome. 
+        </p>
+
+        <div class="contact-grid">
+          
+          <div style="background:var(--bg-soft); padding:24px; border-radius:var(--radius); border:1px solid var(--border);">
+            <h3 style="margin-bottom:12px;">Direct contact</h3>
+            <p style="color:var(--muted); margin-bottom:16px;">
+              Tap an icon to reach me:
+            </p>
+
+            <div class="icon-row">
+              <a href="mailto:dipdangal0@gmail.com" class="icon-btn" title="Gmail">
+                📧
+              </a>
+              <a href="https://www.facebook.com/share/17Ho9aRZTS/" target="_blank" class="icon-btn" title="Facebook">
+                📘
+              </a>
+              <a href="https://www.instagram.com/deepdangal_7" target="_blank" class="icon-btn" title="Instagram">
+                📸
+              </a>
+              <a href="https://www.linkedin.com/in/dip-dangal-b6008b3ab" target="_blank" class="icon-btn" title="LinkedIn">
+                💼
+              </a>
+            </div>
+
+            <p style="margin-top:14px; color:var(--muted); font-size:0.9rem;">
+              If I don’t reply fast, I’m probably debugging something silly.
+            </p>
+          </div>
+
+          
+          <form style="display:grid; gap:14px;">
+            <div>
+              <label for="name" style="display:block; margin-bottom:6px; color:var(--muted);">Name</label>
+              <input id="name" type="text" placeholder="How should I call you?" required>
+            </div>
+            <div>
+              <label for="email" style="display:block; margin-bottom:6px; color:var(--muted);">Email</label>
+              <input id="email" type="email" placeholder="you@example.com" required>
+            </div>
+            <div>
+              <label for="message" style="display:block; margin-bottom:6px; color:var(--muted);">Message</label>
+              <textarea id="message" rows="5" placeholder="Feedback, tips, ideas, or just a hello."></textarea>
+            </div>
+            <button type="submit" class="btn-primary" style="justify-self:start;">Send message</button>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <p>© 2026 deep • Student at Xavier International College • First portfolio</p>
+    <div class="links">
+      <a href="mailto:dipdangal0@gmail.com" title="Gmail">📧</a>
+      <a href="https://www.facebook.com/share/17Ho9aRZTS/" target="_blank" title="Facebook">📘</a>
+      <a href="https://www.instagram.com/deepdangal_7" target="_blank" title="Instagram">📸</a>
+      <a href="https://www.linkedin.com/in/dip-dangal-b6008b3ab" target="_blank" title="LinkedIn">💼</a>
+    </div>
+  </footer>
+
+ 
+  <script>
+    const sections = document.querySelectorAll('section');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('reveal-visible');
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+    sections.forEach((section) => observer.observe(section));
+  </script>
+</body>
+</html>
